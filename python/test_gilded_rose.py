@@ -26,7 +26,7 @@ class TestNormalItem:
 
         assert -2 == items[0].sell_in
 
-    def test_quality_decrease(self):
+    def test_quality_decrease_before_sell_date(self):
         items = [Item("foo", 1, 2)]
         gilded_rose = GildedRose(items)
 
@@ -34,7 +34,15 @@ class TestNormalItem:
 
         assert 1 == items[0].quality
 
-    def test_quality_decrease_fast(self):
+    def test_quality_decrease_on_sell_date(self):
+        items = [Item("foo", 0, 2)]
+        gilded_rose = GildedRose(items)
+
+        gilded_rose.update_quality()
+
+        assert 0 == items[0].quality
+
+    def test_quality_decrease_after_sell_date(self):
         items = [Item("foo", -1, 4)]
         gilded_rose = GildedRose(items)
 

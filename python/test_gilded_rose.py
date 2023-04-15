@@ -296,3 +296,100 @@ class TestBackstage:
 
         assert 50 == items[0].quality
 
+
+class TestConjured:
+    def test_name(self):
+        items = [ItemFactory.create("Conjured Sword of Doom", 0, 0)]
+        gilded_rose = GildedRose(items)
+
+        gilded_rose.update_quality()
+
+        assert "Conjured Sword of Doom" == items[0].name
+
+    def test_sellin(self):
+        items = [ItemFactory.create("Conjured Sword of Doom", 1, 0)]
+        gilded_rose = GildedRose(items)
+
+        gilded_rose.update_quality()
+
+        assert 0 == items[0].sell_in
+
+    def test_sellin_negative(self):
+        items = [ItemFactory.create("Conjured Sword of Doom", -1, 0)]
+        gilded_rose = GildedRose(items)
+
+        gilded_rose.update_quality()
+
+        assert -2 == items[0].sell_in
+
+    def test_quality_before_sell_date(self):
+        items = [ItemFactory.create("Conjured Sword of Doom", 1, 3)]
+        gilded_rose = GildedRose(items)
+
+        gilded_rose.update_quality()
+
+        assert 1 == items[0].quality
+
+    def test_quality_on_sell_date(self):
+        items = [ItemFactory.create("Conjured Sword of Doom", 0, 6)]
+        gilded_rose = GildedRose(items)
+
+        gilded_rose.update_quality()
+
+        assert 2 == items[0].quality
+
+    def test_quality_after_sell_date(self):
+        items = [ItemFactory.create("Conjured Sword of Doom", -1, 6)]
+        gilded_rose = GildedRose(items)
+
+        gilded_rose.update_quality()
+
+        assert 2 == items[0].quality
+
+    def test_quality_not_below_zero(self):
+        items = [ItemFactory.create("Conjured Sword of Doom", 2, 1)]
+        gilded_rose = GildedRose(items)
+
+        gilded_rose.update_quality()
+
+        assert 0 == items[0].quality
+
+    def test_quality_not_below_zero2(self):
+        items = [ItemFactory.create("Conjured Sword of Doom", 2, 0)]
+        gilded_rose = GildedRose(items)
+
+        gilded_rose.update_quality()
+
+        assert 0 == items[0].quality
+
+    def test_quality_not_below_zero3(self):
+        items = [ItemFactory.create("Conjured Sword of Doom", -2, 0)]
+        gilded_rose = GildedRose(items)
+
+        gilded_rose.update_quality()
+
+        assert 0 == items[0].quality
+
+    def test_quality_not_below_zero4(self):
+        items = [ItemFactory.create("Conjured Sword of Doom", -2, 1)]
+        gilded_rose = GildedRose(items)
+
+        gilded_rose.update_quality()
+
+        assert 0 == items[0].quality
+
+    def test_quality_not_below_zero5(self):
+        items = [ItemFactory.create("Conjured Sword of Doom", -2, 2)]
+        gilded_rose = GildedRose(items)
+
+        gilded_rose.update_quality()
+
+        assert 0 == items[0].quality
+
+    def test_quality_not_below_zero6(self):
+        items = [ItemFactory.create("Conjured Sword of Doom", -2, 3)]
+        gilded_rose = GildedRose(items)
+
+        gilded_rose.update_quality()
+
+        assert 0 == items[0].quality

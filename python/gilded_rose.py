@@ -72,10 +72,26 @@ class Backstage(Item):
             self.quality += QUALITY_UNIT
 
 
+class Conjured(Item):
+    def update(self):
+        self.sell_in -= DAY
+
+        if self.quality == MIN_QUALITY:
+            return
+
+        self.quality -= QUALITY_UNIT * 2
+        if self.sell_in < TODAY:
+            self.quality -= QUALITY_UNIT * 2
+
+        if self.quality < 0:
+            self.quality = 0
+
+
 ITEMS_DICT = {
         "Aged Brie": Brie,
         "Sulfuras, Hand of Ragnaros": Sulfuras,
-        "Backstage passes to a TAFKAL80ETC concert": Backstage
+        "Backstage passes to a TAFKAL80ETC concert": Backstage,
+        "Conjured Sword of Doom": Conjured
         }
 
 

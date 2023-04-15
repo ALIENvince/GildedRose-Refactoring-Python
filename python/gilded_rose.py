@@ -7,17 +7,14 @@ class GildedRose(object):
             item.update()
 
 
-class ItemFactory():
-    @staticmethod
-    def create(name, sell_in, quality):
-        if name == "Aged Brie":
-            return Brie(name, sell_in, quality)
-        if name == "Sulfuras, Hand of Ragnaros":
-            return Sulfuras(name, sell_in, quality)
-        if name == "Backstage passes to a TAFKAL80ETC concert":
-            return Backstage(name, sell_in, quality)
-        else:
-            return Normal(name, sell_in, quality)
+DAY = 1
+QUALITY_UNIT = 1
+TODAY = 0
+MIN_QUALITY = 0
+MAX_QUALITY = 50
+
+BACKSTAGE_CLOSE = 10
+BACKSTAGE_VERY_CLOSE = 5
 
 
 class Item:
@@ -32,26 +29,26 @@ class Item:
 
 class Normal(Item):
     def update(self):
-        self.sell_in -= 1
+        self.sell_in -= DAY
 
-        if self.quality == 0:
+        if self.quality == MIN_QUALITY:
             return
 
-        self.quality -= 1
-        if self.sell_in < 0 and self.quality > 0:
-            self.quality -= 1
+        self.quality -= QUALITY_UNIT
+        if self.sell_in < TODAY and self.quality > MIN_QUALITY:
+            self.quality -= QUALITY_UNIT
 
 
 class Brie(Item):
     def update(self):
-        self.sell_in -= 1
+        self.sell_in -= DAY
 
-        if self.quality == 50:
+        if self.quality == MAX_QUALITY:
             return
 
-        self.quality += 1
-        if self.sell_in < 0 and self.quality < 50:
-            self.quality += 1
+        self.quality += QUALITY_UNIT
+        if self.sell_in < TODAY and self.quality < MAX_QUALITY:
+            self.quality += QUALITY_UNIT
 
 
 class Sulfuras(Item):
@@ -61,15 +58,32 @@ class Sulfuras(Item):
 
 class Backstage(Item):
     def update(self):
-        self.sell_in -= 1
+        self.sell_in -= DAY
 
-        if self.sell_in < 0:
-            self.quality = 0
+        if self.sell_in < TODAY:
+            self.quality = MIN_QUALITY
             return
 
-        if self.sell_in < 5 and self.quality < 50:
-            self.quality += 1
-        if self.sell_in < 10 and self.quality < 50:
-            self.quality += 1
-        if self.sell_in >= 0 and self.quality < 50:
-            self.quality += 1
+        if self.sell_in < BACKSTAGE_VERY_CLOSE and self.quality < MAX_QUALITY:
+            self.quality += QUALITY_UNIT
+        if self.sell_in < BACKSTAGE_CLOSE and self.quality < MAX_QUALITY:
+            self.quality += QUALITY_UNIT
+        if self.sell_in >= TODAY and self.quality < MAX_QUALITY:
+            self.quality += QUALITY_UNIT
+
+
+ITEMS_DICT = {
+        "Aged Brie": Brie,
+        "Sulfuras, Hand of Ragnaros": Sulfuras,
+        "Backstage passes to a TAFKAL80ETC concert": Backstage
+        }
+
+
+class ItemFactory():
+    @staticmethod
+    def create(name, sell_in, quality):
+        if name in ITEMS_DICT:
+            return ITEMS_DICT[name](name, sell_in, quality)
+        return Normal(name, sell_in, quality)
+
+
